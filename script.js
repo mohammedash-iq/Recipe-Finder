@@ -52,16 +52,22 @@ let catogory = [
     image: "catogory.png",
   },
 ];
-
 const searchInput = document.getElementById("searchinput");
 const catagoryCardContainer = document.getElementById("catagoryCardContainer");
 const mainCardContainer = document.getElementById("mainCardContainer");
 loadCatogoryCards();
 function searchRecipe() {
-  loadCards();
+  var data = searchData();
+  if (!searchInput.value || searchInput.value.trim() == "") {
+    console.log("type anything");
+    searchInput.value = "";
+    searchInput.focus();
+  } else {
+    searchData(searchInput.value, "s");
+    loadCards();
+  }
 }
 function loadCards() {
-  searchData();
   recipies.map((recipe) => {
     const card = document.createElement("div");
     const image = document.createElement("img");
@@ -96,6 +102,27 @@ function loadCatogoryCards() {
     catagoryCardContainer.style.display = "flex";
   });
 }
-function searchData() {
+async function searchData(data, type) {
   console.log("fetching api for the required data/////");
+  let response, result;
+  try {
+    switch (type) {
+      case "s": {
+        response = await fetch(
+          "https://www.themealdb.com/api/json/v1/1/search.php?s=Arrabiata"
+        );
+        if (response.ok) {
+          result = await response.json();
+          console.log(result);
+        } else {
+          throw new Error("Error Fetching the data", response.status);
+        }
+      }
+      case "c": {
+        response = await fetch(url + data);
+      }
+    }
+  } catch (error) {
+    console.error("Error occured:" + error);
+  }
 }
