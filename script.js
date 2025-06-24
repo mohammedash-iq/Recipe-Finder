@@ -20,7 +20,7 @@ function loadCards(data) {
     const title = document.createElement("h4");
     title.innerText = meal.strMeal;
     const disc = document.createElement("p");
-    disc.innerText = meal.strInstructions;
+    disc.innerText = meal.strInstructions ? meal.strInstructions : "";
     const likebutton = document.createElement("button");
     likebutton.innerText = "❤";
     card.appendChild(image);
