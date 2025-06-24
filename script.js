@@ -1,81 +1,26 @@
-let recipies = [
-  {
-    name: "recipe1",
-    description: "dicreiption of the rcipt;loremipsum",
-    image: "recipe.png",
-  },
-  {
-    name: "recipe1",
-    description: "dicreiption of the rcipt;loremipsum",
-    image: "recipe.png",
-  },
-  {
-    name: "recipe1",
-    description: "dicreiption of the rcipt;loremipsum",
-    image: "recipe.png",
-  },
-  {
-    name: "recipe1",
-    description: "dicreiption of the rcipt;loremipsum",
-    image: "recipe.png",
-  },
-  {
-    name: "recipe1",
-    description: "dicreiption of the rcipt;loremipsum",
-    image: "recipe.png",
-  },
-];
-let catogory = [
-  {
-    name: "catogory1",
-    disc: "catogory discption",
-    image: "catogory.png",
-  },
-  {
-    name: "catogory1",
-    disc: "catogory discption",
-    image: "catogory.png",
-  },
-  {
-    name: "catogory1",
-    disc: "catogory discption",
-    image: "catogory.png",
-  },
-  {
-    name: "catogory1",
-    disc: "catogory discption",
-    image: "catogory.png",
-  },
-  {
-    name: "catogory1",
-    disc: "catogory discption",
-    image: "catogory.png",
-  },
-];
 const searchInput = document.getElementById("searchinput");
 const catagoryCardContainer = document.getElementById("catagoryCardContainer");
 const mainCardContainer = document.getElementById("mainCardContainer");
 loadCatogoryCards();
 function searchRecipe() {
-  var data = searchData();
   if (!searchInput.value || searchInput.value.trim() == "") {
     console.log("type anything");
     searchInput.value = "";
     searchInput.focus();
   } else {
-    searchData(searchInput.value, "s");
-    loadCards();
+    const data = searchData(searchInput.value, "search");
   }
 }
-function loadCards() {
-  recipies.map((recipe) => {
+function loadCards(data) {
+  mainCardContainer.innerHTML = "";
+  data.meals.map((meal) => {
     const card = document.createElement("div");
     const image = document.createElement("img");
-    image.setAttribute("src", recipe.image);
+    image.setAttribute("src", meal.strMealThumb);
     const title = document.createElement("h4");
-    title.innerText = recipe.name;
+    title.innerText = meal.strMeal;
     const disc = document.createElement("p");
-    disc.innerText = recipe.description;
+    disc.innerText = meal.strInstructions;
     const likebutton = document.createElement("button");
     likebutton.innerText = "❤";
     card.appendChild(image);
@@ -86,43 +31,74 @@ function loadCards() {
     mainCardContainer.style.display = "flex";
   });
 }
-function loadCatogoryCards() {
-  catogory.map((recipe) => {
+async function loadCatogoryCards() {
+  const data = await getCategoryData();
+  data.categories.map((category) => {
     const card = document.createElement("div");
     const image = document.createElement("img");
-    image.setAttribute("src", recipe.image);
+    image.setAttribute("src", category.strCategoryThumb);
     const title = document.createElement("h5");
-    title.innerText = recipe.name;
-    const disc = document.createElement("p");
-    disc.innerText = recipe.disc;
+    title.innerText = category.strCategory;
     card.appendChild(title);
     card.appendChild(image);
-    card.append(disc);
+    card.setAttribute("id", category.strCategory);
+    card.setAttribute("onclick", "searchCategory(event)");
     catagoryCardContainer.appendChild(card);
     catagoryCardContainer.style.display = "flex";
   });
 }
-async function searchData(data, type) {
-  console.log("fetching api for the required data/////");
-  let response, result;
+async function getCategoryData() {
   try {
-    switch (type) {
-      case "s": {
-        response = await fetch(
-          "https://www.themealdb.com/api/json/v1/1/search.php?s=Arrabiata"
-        );
-        if (response.ok) {
-          result = await response.json();
-          console.log(result);
-        } else {
-          throw new Error("Error Fetching the data", response.status);
-        }
-      }
-      case "c": {
-        response = await fetch(url + data);
-      }
+    const response = await fetch(
+      "https://www.themealdb.com/api/json/v1/1/categories.php"
+    );
+    if (response.ok) {
+      result = await response.json();
+      return result;
+    } else {
+      throw new Error("Error Fetching the data", response.status);
     }
   } catch (error) {
-    console.error("Error occured:" + error);
+    console.error("Error Occured:" + error);
   }
+}
+
+async function searchData(data, type) {
+  let response, result;
+  if (type == "search") {
+    try {
+      const response = await fetch(
+        `https://www.themealdb.com/api/json/v1/1/search.php?s=${data}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        loadCards(data);
+      } else {
+        throw new Error("Error Fetching the data", response.status);
+      }
+    } catch (error) {
+      console.error("Error occured:" + error);
+    }
+  } else if (type == "category") {
+    try {
+      const response = await fetch(
+        `https://www.themealdb.com/api/json/v1/1/filter.php?c=${data}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        loadCards(data);
+      } else {
+        throw new Error("Error Fetching the data", response.status);
+      }
+    } catch (error) {
+      console.error("Error occured:" + error);
+    }
+  }
+}
+
+function searchCategory(event) {
+  searchData(
+    event.target.id ? event.target.id : event.target.parentElement.id,
+    "category"
+  );
 }
