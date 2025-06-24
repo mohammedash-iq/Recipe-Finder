@@ -3,27 +3,32 @@
 
 <head>
     <title>Recipe Finder</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="output.css" />
 </head>
-<div>
-    <header>
-        <h1>Recipe Finder</h1>
-        <div>
-            <input id="searchinput" type="text" placeholder="Search for a Recipe...." />
-            <button id="searchbtn" onclick="searchRecipe()">Search</button>
+
+<body class="bg-emerald-50">
+    <header class="grid grid-cols-3 p-5 bg-emerald-100 lg:">
+        <h1 class="font-bold text-3xl text-center text-emerald-300">
+            Recipe Finder
+        </h1>
+        <div class="w-full col-span-2 grid grid-cols-4">
+            <input class="col-span-3 bg-emerald-200 px-2 mx-3 rounded-sm" id="searchinput" type="text"
+                placeholder="Search for a Recipe...." />
+            <button class="col-span-1 bg-emerald-400 rounded-sm text-white mx-1 px-2" id="searchbtn"
+                onclick="searchRecipe()">
+                Search
+            </button>
         </div>
     </header>
     <main>
-        <div id="catagoryCardContainer"></div>
-        <div style="display: flex">
-            <div id="mainCardContainer"></div>
-            <aside>Random recipe plus the recipe when clicked!</aside>
+        <div id="catagoryCardContainer" class="grid grid-cols-6"></div>
+        <div class="grid grid-cols-5 h-lvh ">
+            <div id="mainCardContainer" class="overflow-scroll grid grid-cols-3 col-span-3"></div>
+            <aside class="col-span-2 w-full">Random recipe plus the recipe when clicked!</aside>
         </div>
-    </main>
-    <footer>this is the Footer</footer>
-</div>
-<script src="script.js"></script>
 
-<body></body>
+    </main>
+    <script src="script.js"></script>
+</body>
 
 </html>

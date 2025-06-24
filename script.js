@@ -15,6 +15,7 @@ function loadCards(data) {
   mainCardContainer.innerHTML = "";
   data.meals.map((meal) => {
     const card = document.createElement("div");
+    card.className = "bg-emerald-200 m-0.5 rounded-md col-span-1";
     const image = document.createElement("img");
     image.setAttribute("src", meal.strMealThumb);
     const title = document.createElement("h4");
@@ -28,23 +29,23 @@ function loadCards(data) {
     card.appendChild(disc);
     card.appendChild(likebutton);
     mainCardContainer.appendChild(card);
-    mainCardContainer.style.display = "flex";
   });
 }
 async function loadCatogoryCards() {
   const data = await getCategoryData();
   data.categories.map((category) => {
     const card = document.createElement("div");
+    card.className = "bg-emerald-200 m-0.5 rounded-md w-full col-span-1";
     const image = document.createElement("img");
     image.setAttribute("src", category.strCategoryThumb);
     const title = document.createElement("h5");
+    title.className = "text-center text-white";
     title.innerText = category.strCategory;
     card.appendChild(title);
     card.appendChild(image);
     card.setAttribute("id", category.strCategory);
     card.setAttribute("onclick", "searchCategory(event)");
     catagoryCardContainer.appendChild(card);
-    catagoryCardContainer.style.display = "flex";
   });
 }
 async function getCategoryData() {
