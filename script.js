@@ -1,7 +1,9 @@
 const searchInput = document.getElementById("searchinput");
 const catagoryCardContainer = document.getElementById("catagoryCardContainer");
 const mainCardContainer = document.getElementById("mainCardContainer");
+const recipeContainer = document.getElementById("recipeContainer");
 loadCatogoryCards();
+searchData("", "random");
 function searchRecipe() {
   if (!searchInput.value || searchInput.value.trim() == "") {
     console.log("type anything");
@@ -15,31 +17,38 @@ function loadCards(data) {
   mainCardContainer.innerHTML = "";
   data.meals.map((meal) => {
     const card = document.createElement("div");
-    card.className = "bg-emerald-200 m-0.5 rounded-md col-span-1";
+    card.setAttribute("id", meal.idMeal);
+    card.className = "bg-emerald-100 m-2 p-2 rounded-lg ";
+    card.setAttribute("onclick", "updateRecipeCard(event)");
     const image = document.createElement("img");
     image.setAttribute("src", meal.strMealThumb);
+    image.className = " p-3 rounded-2xl";
     const title = document.createElement("h4");
+    title.className = "text-center font-semibold text-emerald-400 p-1 h-[20%]";
     title.innerText = meal.strMeal;
-    const disc = document.createElement("p");
-    disc.innerText = meal.strInstructions ? meal.strInstructions : "";
     const likebutton = document.createElement("button");
-    likebutton.innerText = "❤";
+    likebutton.innerText = "❤ Add to Favorites";
+    likebutton.className = "m-2 p-2 bg-emerald-200 block rounded-sm ";
     card.appendChild(image);
     card.appendChild(title);
-    card.appendChild(disc);
-    card.appendChild(likebutton);
-    mainCardContainer.appendChild(card);
+    const container = document.createElement("div");
+    container.className = "col-span-1 max-sm:col-span-2";
+    container.appendChild(card);
+    container.appendChild(likebutton);
+    mainCardContainer.appendChild(container);
   });
 }
 async function loadCatogoryCards() {
   const data = await getCategoryData();
   data.categories.map((category) => {
     const card = document.createElement("div");
-    card.className = "bg-emerald-200 m-0.5 rounded-md w-full col-span-1";
+    card.className =
+      "bg-emerald-100 m-1 flex rounded-md max-sm:col-span-6 max-lg:col-span-4 lg:col-span-2";
     const image = document.createElement("img");
     image.setAttribute("src", category.strCategoryThumb);
+    image.className = "flex-1/4 w-0.5 p-2 rounded-full ";
     const title = document.createElement("h5");
-    title.className = "text-center text-white";
+    title.className = "text-left font-semibold text-emerald-400 p-2 flex-3/4 ";
     title.innerText = category.strCategory;
     card.appendChild(title);
     card.appendChild(image);
@@ -94,6 +103,34 @@ async function searchData(data, type) {
     } catch (error) {
       console.error("Error occured:" + error);
     }
+  } else if (type == "recipe") {
+    try {
+      const response = await fetch(
+        `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${data}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        loadRecipe(data.meals[0]);
+      } else {
+        throw new Error("Error Fetching the data", response.status);
+      }
+    } catch (error) {
+      console.error("Error occured:" + error);
+    }
+  } else if (type == "random") {
+    try {
+      const response = await fetch(
+        "https://www.themealdb.com/api/json/v1/1/random.php"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        loadRecipe(data.meals[0]);
+      } else {
+        throw new Error("Error Fetching the data", response.status);
+      }
+    } catch (error) {
+      console.error("Error occured:" + error);
+    }
   }
 }
 
@@ -102,4 +139,26 @@ function searchCategory(event) {
     event.target.id ? event.target.id : event.target.parentElement.id,
     "category"
   );
+}
+
+function updateRecipeCard(event) {
+  searchData(
+    event.target.id ? event.target.id : event.target.parentElement.id,
+    "recipe"
+  );
+}
+function loadRecipe(data) {
+  recipeContainer.innerHTML = "";
+  const card = document.createElement("div");
+  card.className = "bg-emerald-100 m-1 flex rounded-md ";
+  const image = document.createElement("img");
+  image.setAttribute("src", data.strMealThumb);
+  image.className = "flex-2/4 w-0.5 p-2 rounded-2xl ";
+  const title = document.createElement("h5");
+  title.className =
+    "text-center font-semibold text-2xl p-2  text-emerald-400 p-2 flex-2/4 ";
+  title.innerText = data.strMeal;
+  card.appendChild(title);
+  card.appendChild(image);
+  recipeContainer.appendChild(card);
 }

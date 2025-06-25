@@ -1,34 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <title>Recipe Finder</title>
     <link rel="stylesheet" href="output.css" />
-</head>
+  </head>
 
-<body class="bg-emerald-50">
-    <header class="grid grid-cols-3 p-5 bg-emerald-100 lg:">
-        <h1 class="font-bold text-3xl text-center text-emerald-300">
-            Recipe Finder
-        </h1>
-        <div class="w-full col-span-2 grid grid-cols-4">
-            <input class="col-span-3 bg-emerald-200 px-2 mx-3 rounded-sm" id="searchinput" type="text"
-                placeholder="Search for a Recipe...." />
-            <button class="col-span-1 bg-emerald-400 rounded-sm text-white mx-1 px-2" id="searchbtn"
-                onclick="searchRecipe()">
-                Search
-            </button>
-        </div>
+  <body class="bg-emerald-50 p-2">
+    <header class="p-2 md:grid grid-cols-5">
+      <h1
+        class="p-2 text-center text-3xl font-bold text-emerald-300 sm: w-full col-span-3 md:col-span-2 justify-end"
+      >
+        Recipe Finder
+      </h1>
+      <div class="m-2 sm:w-full col-span-3 grid grid-cols-5 mx-2 md:col-span-2">
+        <input
+          class="col-span-4 bg-emerald-200 py-1.5 px-2 mx-3 rounded-sm"
+          id="searchinput"
+          type="text"
+          placeholder="Search for a Recipe...."
+        />
+        <button
+          class="col-span-1 bg-emerald-400 rounded-sm text-white py-2 mx-1 px-2"
+          id="searchbtn"
+          onclick="searchRecipe()"
+        >
+          Search
+        </button>
+      </div>
     </header>
-    <main>
-        <div id="catagoryCardContainer" class="grid grid-cols-6"></div>
-        <div class="grid grid-cols-5 h-lvh ">
-            <div id="mainCardContainer" class="overflow-scroll grid grid-cols-3 col-span-3"></div>
-            <aside class="col-span-2 w-full">Random recipe plus the recipe when clicked!</aside>
-        </div>
-
+    <main class="m-auto min-lg:w-6xl min-md:w-3xl">
+      <section>
+        <div
+          id="catagoryCardContainer"
+          class="grid grid-cols-12 justify-center"
+        ></div>
+      </section>
+      <section>
+        <div id="recipeContainer" class="w-full"></div>
+        <div
+          id="mainCardContainer"
+          class="grid grid-cols-4 col-span-3 max-sm:col-span-5"
+        ></div>
+      </section>
     </main>
     <script src="script.js"></script>
-</body>
-
+  </body>
 </html>
