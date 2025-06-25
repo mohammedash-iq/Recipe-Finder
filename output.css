@@ -7,6 +7,8 @@
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
+    --color-red-400: oklch(70.4% 0.191 22.216);
+    --color-red-500: oklch(63.7% 0.237 25.331);
     --color-emerald-50: oklch(97.9% 0.021 166.113);
     --color-emerald-100: oklch(95% 0.052 163.051);
     --color-emerald-200: oklch(90.5% 0.093 164.15);
@@ -16,6 +18,10 @@
     --spacing: 0.25rem;
     --container-3xl: 48rem;
     --container-6xl: 72rem;
+    --text-sm: 0.875rem;
+    --text-sm--line-height: calc(1.25 / 0.875);
+    --text-xl: 1.25rem;
+    --text-xl--line-height: calc(1.75 / 1.25);
     --text-2xl: 1.5rem;
     --text-2xl--line-height: calc(2 / 1.5);
     --text-3xl: 1.875rem;
@@ -225,26 +231,14 @@
   .mx-3 {
     margin-inline: calc(var(--spacing) * 3);
   }
-  .block {
-    display: block;
-  }
   .flex {
     display: flex;
   }
   .grid {
     display: grid;
   }
-  .table {
-    display: table;
-  }
   .h-\[20\%\] {
     height: 20%;
-  }
-  .h-\[30\%\] {
-    height: 30%;
-  }
-  .w-0 {
-    width: calc(var(--spacing) * 0);
   }
   .w-0\.5 {
     width: calc(var(--spacing) * 0.5);
@@ -252,29 +246,14 @@
   .w-\[30\%\] {
     width: 30%;
   }
-  .w-\[40\%\] {
-    width: 40%;
-  }
   .w-full {
     width: 100%;
-  }
-  .flex-1 {
-    flex: 1;
   }
   .flex-1\/4 {
     flex: calc(1/4 * 100%);
   }
-  .flex-3 {
-    flex: 3;
-  }
   .flex-3\/4 {
     flex: calc(3/4 * 100%);
-  }
-  .border-collapse {
-    border-collapse: collapse;
-  }
-  .resize {
-    resize: both;
   }
   .grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -294,6 +273,9 @@
   .justify-end {
     justify-content: flex-end;
   }
+  .gap-1 {
+    gap: calc(var(--spacing) * 1);
+  }
   .rounded-2xl {
     border-radius: var(--radius-2xl);
   }
@@ -312,10 +294,6 @@
   .rounded-xl {
     border-radius: var(--radius-xl);
   }
-  .border {
-    border-style: var(--tw-border-style);
-    border-width: 1px;
-  }
   .bg-emerald-50 {
     background-color: var(--color-emerald-50);
   }
@@ -325,8 +303,14 @@
   .bg-emerald-200 {
     background-color: var(--color-emerald-200);
   }
+  .bg-emerald-300 {
+    background-color: var(--color-emerald-300);
+  }
   .bg-emerald-400 {
     background-color: var(--color-emerald-400);
+  }
+  .bg-red-400 {
+    background-color: var(--color-red-400);
   }
   .p-1 {
     padding: calc(var(--spacing) * 1);
@@ -337,14 +321,8 @@
   .p-3 {
     padding: calc(var(--spacing) * 3);
   }
-  .p-6 {
-    padding: calc(var(--spacing) * 6);
-  }
   .px-2 {
     padding-inline: calc(var(--spacing) * 2);
-  }
-  .py-1 {
-    padding-block: calc(var(--spacing) * 1);
   }
   .py-1\.5 {
     padding-block: calc(var(--spacing) * 1.5);
@@ -366,6 +344,14 @@
     font-size: var(--text-3xl);
     line-height: var(--tw-leading, var(--text-3xl--line-height));
   }
+  .text-sm {
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+  }
+  .text-xl {
+    font-size: var(--text-xl);
+    line-height: var(--tw-leading, var(--text-xl--line-height));
+  }
   .font-bold {
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
@@ -380,15 +366,11 @@
   .text-emerald-400 {
     color: var(--color-emerald-400);
   }
+  .text-red-500 {
+    color: var(--color-red-500);
+  }
   .text-white {
     color: var(--color-white);
-  }
-  .underline {
-    text-decoration-line: underline;
-  }
-  .outline {
-    outline-style: var(--tw-outline-style);
-    outline-width: 1px;
   }
   .max-lg\:col-span-4 {
     @media (width < 64rem) {
@@ -398,11 +380,6 @@
   .max-sm\:col-span-2 {
     @media (width < 40rem) {
       grid-column: span 2 / span 2;
-    }
-  }
-  .max-sm\:col-span-5 {
-    @media (width < 40rem) {
-      grid-column: span 5 / span 5;
     }
   }
   .max-sm\:col-span-6 {
@@ -446,26 +423,14 @@
     }
   }
 }
-@property --tw-border-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
-}
 @property --tw-font-weight {
   syntax: "*";
   inherits: false;
 }
-@property --tw-outline-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
-}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
-      --tw-border-style: solid;
       --tw-font-weight: initial;
-      --tw-outline-style: solid;
     }
   }
 }

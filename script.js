@@ -2,11 +2,12 @@ const searchInput = document.getElementById("searchinput");
 const catagoryCardContainer = document.getElementById("catagoryCardContainer");
 const mainCardContainer = document.getElementById("mainCardContainer");
 const recipeContainer = document.getElementById("recipeContainer");
+const favoriteCard = document.getElementById("favoriterecipies");
 loadCatogoryCards();
 searchData("", "random");
 function searchRecipe() {
   if (!searchInput.value || searchInput.value.trim() == "") {
-    console.log("type anything");
+    alert("Type a value!");
     searchInput.value = "";
     searchInput.focus();
   } else {
@@ -15,28 +16,33 @@ function searchRecipe() {
 }
 function loadCards(data) {
   mainCardContainer.innerHTML = "";
-  data.meals.map((meal) => {
-    const card = document.createElement("div");
-    card.setAttribute("id", meal.idMeal);
-    card.className = "bg-emerald-100 m-2 p-2 rounded-lg ";
-    card.setAttribute("onclick", "updateRecipeCard(event)");
-    const image = document.createElement("img");
-    image.setAttribute("src", meal.strMealThumb);
-    image.className = " p-3 rounded-2xl";
-    const title = document.createElement("h4");
-    title.className = "text-center font-semibold text-emerald-400 p-1 h-[20%]";
-    title.innerText = meal.strMeal;
-    const likebutton = document.createElement("button");
-    likebutton.innerText = "❤ Add to Favorites";
-    likebutton.className = "m-2 p-2 bg-emerald-200 block rounded-sm ";
-    card.appendChild(image);
-    card.appendChild(title);
-    const container = document.createElement("div");
-    container.className = "col-span-1 max-sm:col-span-2";
-    container.appendChild(card);
-    container.appendChild(likebutton);
-    mainCardContainer.appendChild(container);
-  });
+  if (!data.meals) {
+    mainCardContainer.innerHTML =
+      "<p class='text-red-500 text-xl'>No results found.</p>";
+  } else {
+    data.meals.map((meal) => {
+      const card = document.createElement("button");
+      card.setAttribute("id", meal.idMeal);
+      card.className = "bg-emerald-100 m-2 p-2 rounded-lg";
+      card.setAttribute("onclick", "updateRecipeCard(event)");
+      const image = document.createElement("img");
+      image.setAttribute("alt", `${meal.strMeal} image`);
+      image.setAttribute("src", meal.strMealThumb);
+      image.className = " p-3 rounded-2xl";
+      const title = document.createElement("h4");
+      title.className =
+        "text-center font-semibold text-emerald-400 p-1 h-[20%]";
+      title.innerText = meal.strMeal;
+      const likebutton = document.createElement("button");
+      likebutton.innerHTML = `<button id="${meal.idMeal}" class= " text-sm bg-emerald-300 p-1 rounded-2xl" onclick="addFavorite(event)">Add to Favorites</button>`;
+      card.appendChild(image);
+      card.appendChild(title);
+      card.appendChild(likebutton);
+      card.className =
+        "col-span-1 m-2  rounded-xl align-center bg-emerald-100 max-sm:col-span-2 ";
+      mainCardContainer.appendChild(card);
+    });
+  }
 }
 async function loadCatogoryCards() {
   const data = await getCategoryData();
@@ -45,6 +51,7 @@ async function loadCatogoryCards() {
     card.className =
       "bg-emerald-100 m-1 flex rounded-md max-sm:col-span-6 max-lg:col-span-4 lg:col-span-2";
     const image = document.createElement("img");
+    image.setAttribute("alt", `${category.strCategory} image`);
     image.setAttribute("src", category.strCategoryThumb);
     image.className = "flex-1/4 w-0.5 p-2 rounded-full ";
     const title = document.createElement("h5");
@@ -151,6 +158,7 @@ function loadRecipe(data) {
   recipeContainer.innerHTML = "";
   const card = document.createElement("div");
   const image = document.createElement("img");
+  image.setAttribute("alt", `${data.strMeal} image`);
   image.setAttribute("src", data.strMealThumb);
   image.className = "m-6 rounded-2xl w-[30%] max-sm:w-[40%]";
   const title = document.createElement("h5");
@@ -163,7 +171,11 @@ function loadRecipe(data) {
   instruction.innerHTML = `Instructions:<br> ${data.strInstructions}`;
   instruction.className = "m-6 bg-emerald-200";
   const youtubelink = document.createElement("a");
-  youtubelink.innerHTML = `Video: Click here to watch a youtube tutorial!`;
+  youtubelink.innerHTML = `Video: ${
+    data.strYoutube
+      ? "Click here to watch a youtube tutorial!"
+      : "No links Found"
+  }`;
   youtubelink.setAttribute("href", data.strYoutube);
   youtubelink.className = "m-6";
   const container = document.createElement("div");
@@ -175,4 +187,60 @@ function loadRecipe(data) {
   container.appendChild(image);
   recipeContainer.appendChild(container);
   recipeContainer.appendChild(instruction);
+}
+
+function addFavorite(event) {
+  let localdata = localStorage.getItem("favoriteRecipe");
+  if (!localdata) {
+    let arr = [event.target.id];
+    localStorage.setItem("favoriteRecipe", JSON.stringify(arr));
+  } else {
+    let arr = JSON.parse(localdata);
+    arr.push(event.target.id);
+    console.log(arr);
+    localStorage.setItem("favoriteRecipe", JSON.stringify(arr));
+  }
+  event.stopPropagation();
+}
+async function loadFavorites(id) {
+  try {
+    const response = await fetch(
+      `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data.meals[0];
+    } else {
+      throw new Error("Error Fetching the data", response.status);
+    }
+  } catch (error) {
+    console.log("Error Occured" + error);
+  }
+}
+function loadFavoritesCards() {
+  const localdata = JSON.parse(localStorage.getItem("favoriteRecipe"));
+  if (localdata) {
+    localdata.map(async (id) => {
+      favoriteCard.innerHTML = "";
+      const data = await loadFavorites(id);
+      favoriteCard.innerHTML = `${favoriteCard.innerHTML}
+      <div><img src="${data.strMealThumb}" alt="${data.strMeal}" ><h4>${data.strMeal}</h4><button id="${data.idMeal}" onclick="removeFavorite(event)">Remove</button>
+      </div>`;
+    });
+  } else {
+    favoriteCard.innerHTML = `<h4 class="bg-red-400">No Favorite Recipies Yet!</h4>`;
+  }
+}
+loadFavoritesCards();
+function removeFavorite(event) {
+  let localdata = localStorage.getItem("favoriteRecipe");
+  if (!localdata) {
+    let arr = [event.target.id];
+    localStorage.setItem("favoriteRecipe", JSON.stringify(arr));
+  } else {
+    let arr = JSON.parse(localdata);
+    arr.push(event.target.id);
+    console.log(arr);
+    localStorage.setItem("favoriteRecipe", JSON.stringify(arr));
+  }
 }
