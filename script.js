@@ -3,15 +3,13 @@ const catagoryCardContainer = document.getElementById("catagoryCardContainer");
 const mainCardContainer = document.getElementById("mainCardContainer");
 const recipeContainer = document.getElementById("recipeContainer");
 const favoriteCard = document.getElementById("favoriterecipe");
+const noFavoriteWarning = document.getElementById("nofavoritewarning");
 // displays the category section cards intially when the page loads
 loadCatogoryCards();
 // displays the favorite recipe section when page is loaded
 loadFavoritesCards();
 // displays a random recipe in the recipe details section
 searchData("", "random");
-// initiates or verifys the local storage
-if (localStorage.getItem("favoriteRecipe"))
-  localStorage.setItem("favoriteRecipe", JSON.stringify([]));
 
 function searchRecipe() {
   if (!searchInput.value || searchInput.value.trim() == "") {
@@ -176,7 +174,7 @@ function loadRecipe(data) {
   details.className = "m-6 ";
   const instruction = document.createElement("p");
   instruction.innerHTML = `Instructions:<br> ${data.strInstructions}`;
-  instruction.className = "m-8 mb-2 bg-emerald-200";
+  instruction.className = "p-2 bg-emerald-200";
   const youtubelink = document.createElement("a");
   youtubelink.innerHTML = `Video: ${
     data.strYoutube
@@ -186,7 +184,7 @@ function loadRecipe(data) {
   youtubelink.setAttribute("href", data.strYoutube);
   youtubelink.className = "m-6";
   const container = document.createElement("div");
-  container.className = "flex justify-between bg-emerald-200 rounded-xl";
+  container.className = "flex justify-between  rounded-xl";
   card.appendChild(title);
   card.appendChild(details);
   card.appendChild(youtubelink);
@@ -197,18 +195,21 @@ function loadRecipe(data) {
 }
 
 function addFavorite(event) {
+  if (!localStorage.getItem("favoriteRecipe"))
+    localStorage.setItem("favoriteRecipe", JSON.stringify([]));
   const recipeId = event.target.id;
   let favoriteRecipes = JSON.parse(localStorage.getItem("favoriteRecipe"));
   if (!favoriteRecipes.includes(recipeId)) {
     favoriteRecipes.push(recipeId);
     localStorage.setItem("favoriteRecipe", JSON.stringify(favoriteRecipes));
   }
+  loadFavoritesCards();
   event.stopPropagation();
 }
-async function loadFavorites(id) {
+async function fetchfavorite(recipeId) {
   try {
     const response = await fetch(
-      `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
+      `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipeId}`
     );
     if (response.ok) {
       const data = await response.json();
@@ -221,10 +222,13 @@ async function loadFavorites(id) {
   }
 }
 function loadFavoritesCards() {
+  noFavoriteWarning.innerHTML = "";
+  favoriteCard.innerHTML = "";
   const favoriteRecipes = JSON.parse(localStorage.getItem("favoriteRecipe"));
-  if (favoriteRecipes) {
-    favoriteRecipes.map(async (recipe) => {
-      const data = await loadFavorites(recipe);
+  if (!favoriteRecipes.length == 0) {
+    console.log(favoriteRecipes.length);
+    favoriteRecipes.map(async (recipeId) => {
+      const data = await fetchfavorite(recipeId);
       const card = document.createElement("div");
       card.setAttribute("id", data.idMeal);
       card.setAttribute("onclick", "updateRecipeCard(event)");
@@ -237,7 +241,7 @@ function loadFavoritesCards() {
         "text-center font-semibold text-emerald-400 p-1 h-[10%]";
       title.innerText = data.strMeal;
       const dislike = document.createElement("button");
-      dislike.innerHTML = `<button id="${data.idMeal}" class= " text-sm bg-emerald-300 p-1 mx-2 rounded-2xl h-[10%]" onclick="removeFavorite(event)">💚</button>`;
+      dislike.innerHTML = `<button id="${data.idMeal}" class= " text-sm bg-emerald-300 p-1 mx-2 rounded-2xl h-[10%]" onclick="removeFavorite(event)">❌</button>`;
       card.appendChild(image);
       card.appendChild(title);
       card.appendChild(dislike);
@@ -246,7 +250,7 @@ function loadFavoritesCards() {
       favoriteCard.appendChild(card);
     });
   } else {
-    favoriteCard.innerHTML = `<h4 class="block text-red-500 m-3 text-xl text-center">No Favorite Recipies Yet!</h4>`;
+    noFavoriteWarning.innerHTML = `<h4 class="text-center text-2xl py-2 text-red-500 font-semibold m-4">No Favorites Yet!</h4>`;
   }
 }
 function removeFavorite(event) {
@@ -254,5 +258,6 @@ function removeFavorite(event) {
   let arr = JSON.parse(localdata);
   arr.splice(arr.indexOf(event.target.id, 1));
   localStorage.setItem("favoriteRecipe", JSON.stringify(arr));
+  loadFavoritesCards();
   event.stopPropagation();
 }

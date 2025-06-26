@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="output.css" />
   </head>
 
-  <body class="bg-emerald-50 p-2">
+  <body class="bg-emerald-50 p-2 m-auto min-lg:w-6xl min-md:w-3xl">
     <header class="p-2 md:grid grid-cols-5">
       <h1
         class="p-2 text-center text-3xl font-bold text-emerald-300 sm: w-full col-span-3 md:col-span-2 justify-end"
@@ -28,19 +28,20 @@
         </button>
       </div>
     </header>
-    <main class="m-auto min-lg:w-6xl min-md:w-3xl">
+    <main class="">
       <section>
-        <div
-          id="catagoryCardContainer"
-          class="grid grid-cols-12 justify-center"
-        ></div>
+        <div id="catagoryCardContainer" class="grid grid-cols-12"></div>
       </section>
       <section>
-        <div id="recipeContainer" class="bg-emerald-200 rounded-2xl"></div>
-        <div id="mainCardContainer" class="grid grid-cols-4 gap-3"></div>
+        <div id="recipeContainer" class="bg-emerald-100 rounded-2xl my-4"></div>
+        <div id="mainCardContainer" class="grid grid-cols-4 gap-3 my-4"></div>
       </section>
       <section>
+        <h4 class="text-center text-2xl text-emerald-500 font-semibold m-4">
+          💚Favorite Recipies 💚
+        </h4>
         <div id="favoriterecipe" class="grid grid-cols-4 gap-3"></div>
+        <div class="rounded-2xl bg-red-300" id="nofavoritewarning"></div>
       </section>
     </main>
     <script src="script.js"></script>
