@@ -1,18 +1,15 @@
-<pre>
-```xml
+
 <project>
-  <name>Recipe Finder App</name>
-  <description>
+  <h1>Recipe Finder App</h1>
+  <h3>
     A front-end-only recipe search application built using HTML, CSS (Tailwind), and JavaScript.
-  </description>
-
-  <features>
-    <feature>Search for meals by name</feature>
-    <feature>Browse meals by category</feature>
-    <feature>View detailed recipe information</feature>
-    <feature>Manage favorites using localStorage</feature>
-  </features>
-
+  </h3>
+<ul>
+    <li>Search for meals by name</li>
+    <li>Browse meals by category</li>
+    <li>View detailed recipe information</li>
+    <li>Manage favorites using localStorage</li>
+</ul>
   <technologies>
     <technology>HTML</technology>
     <technology>Tailwind CSS</technology>
@@ -20,7 +17,7 @@
   </technologies>
 
   <api>
-    <source>TheMealDB</source>
+    <source><h4>TheMealDB</h4></source>
     <link>https://www.themealdb.com/api.php</link>
   </api>
 
