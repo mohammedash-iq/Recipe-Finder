@@ -22,6 +22,7 @@
   </api>
 
   <author>
-    <name>Ash</name>
+   <h5> <name>-Ash</name></h5>
+<h6>Made as a part of javascript practice project</h6>
   </author>
 </project>
