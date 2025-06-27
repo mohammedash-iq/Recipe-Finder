@@ -1,8 +1,3 @@
-That way, it will **display as a code snippet in XML style**, not as raw unstructured text.
-
-### ✅ Example:
-Here’s how your `README.md` should actually look:
-
 <pre>
 ```xml
 <project>
