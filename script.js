@@ -39,7 +39,11 @@ function loadCards(data) {
         "text-center font-semibold text-emerald-400 p-1 h-[10%]";
       title.innerText = meal.strMeal;
       const likebutton = document.createElement("button");
-      likebutton.innerHTML = `<button id="${meal.idMeal}" class="text-sm bg-emerald-300 p-1 mx-2 rounded-2xl h-[10%]" onclick="addFavorite(event)">💚</button>`;
+      likebutton.id = meal.idMeal;
+      likebutton.innerText = "💚";
+      likebutton.className =
+        "text-sm bg-emerald-300 p-1 mx-2 rounded-2xl h-[10%]";
+      likebutton.setAttribute("onclick", "addFavorite(event)");
       card.appendChild(image);
       card.appendChild(title);
       card.appendChild(likebutton);
@@ -100,6 +104,7 @@ async function searchData(data, type) {
       }
     } catch (error) {
       console.error("Error occured:" + error);
+      mainCardContainer.innerHTML = `<h4 class="text-center col-span-4 text-xl py-2 text-red-500 font-semibold m-4">Failed to load data. Please try again.</h4>`;
     }
   } else if (type == "category") {
     try {
@@ -165,13 +170,13 @@ function loadRecipe(data) {
   const image = document.createElement("img");
   image.setAttribute("alt", `${data.strMeal} image`);
   image.setAttribute("src", data.strMealThumb);
-  image.className = "m-6 rounded-2xl w-[30%] max-sm:w-[40%]";
+  image.className = "m-4 rounded-2xl w-[30%] max-sm:w-[40%]";
   const title = document.createElement("h5");
-  title.className = "text-left font-semibold text-2xl m-6 text-emerald-400";
+  title.className = "text-center font-semibold text-3xl m-6 text-emerald-400";
   title.innerText = data.strMeal;
   const details = document.createElement("p");
   details.innerHTML = `Category:  ${data.strCategory}<br><br>Origin: ${data.strArea}`;
-  details.className = "m-6 ";
+  details.className = "m-6  ";
   const instruction = document.createElement("p");
   instruction.innerHTML = `Instructions:<br> ${data.strInstructions}`;
   instruction.className = "p-2 bg-emerald-200";
@@ -202,8 +207,9 @@ function addFavorite(event) {
   if (!favoriteRecipes.includes(recipeId)) {
     favoriteRecipes.push(recipeId);
     localStorage.setItem("favoriteRecipe", JSON.stringify(favoriteRecipes));
+    loadFavoritesCards();
   }
-  loadFavoritesCards();
+
   event.stopPropagation();
 }
 async function fetchfavorite(recipeId) {
@@ -225,8 +231,7 @@ function loadFavoritesCards() {
   noFavoriteWarning.innerHTML = "";
   favoriteCard.innerHTML = "";
   const favoriteRecipes = JSON.parse(localStorage.getItem("favoriteRecipe"));
-  if (!favoriteRecipes.length == 0) {
-    console.log(favoriteRecipes.length);
+  if (favoriteRecipes.length !== 0) {
     favoriteRecipes.map(async (recipeId) => {
       const data = await fetchfavorite(recipeId);
       const card = document.createElement("div");
@@ -241,7 +246,10 @@ function loadFavoritesCards() {
         "text-center font-semibold text-emerald-400 p-1 h-[10%]";
       title.innerText = data.strMeal;
       const dislike = document.createElement("button");
-      dislike.innerHTML = `<button id="${data.idMeal}" class= " text-sm bg-emerald-300 p-1 mx-2 rounded-2xl h-[10%]" onclick="removeFavorite(event)">❌</button>`;
+      dislike.id = data.idMeal;
+      dislike.innerText = "❌";
+      dislike.className = "text-sm bg-emerald-300 p-1 mx-2 rounded-2xl h-[10%]";
+      dislike.setAttribute("onclick", "removeFavorite(event)");
       card.appendChild(image);
       card.appendChild(title);
       card.appendChild(dislike);
@@ -256,7 +264,7 @@ function loadFavoritesCards() {
 function removeFavorite(event) {
   const localdata = localStorage.getItem("favoriteRecipe");
   let arr = JSON.parse(localdata);
-  arr.splice(arr.indexOf(event.target.id, 1));
+  arr.splice(arr.indexOf(event.target.id), 1);
   localStorage.setItem("favoriteRecipe", JSON.stringify(arr));
   loadFavoritesCards();
   event.stopPropagation();
